@@ -24,3 +24,27 @@ public partial class MainWindow : Window
 ![wpfgif](https://cloud.githubusercontent.com/assets/46207/15827037/ed8a72c6-2c44-11e6-81d6-b90dabf0afa9.gif)
 
 `ObserveEveryValueChanged(propertySelector)`. That's all.
+
+with [ReactiveProperty](https://github.com/runceel/ReactiveProperty/), you can create notify property changed value.
+
+```csharp
+public class MyClass
+{
+    public int MyProperty { get; set; }
+}
+
+
+public partial class MainWindow : Window
+{
+    MyClass model;
+    IReadOnlyReactiveProperty<int> MyClassMyProperty { get; }
+
+    public MainWindow()
+    {
+        InitializeComponent();
+
+        model = new MyClass();
+        this.MyClassMyProperty = mc.ObserveEveryValueChanged(x => x.MyProperty).ToReadOnlyReactiveProperty();
+    }
+}
+```

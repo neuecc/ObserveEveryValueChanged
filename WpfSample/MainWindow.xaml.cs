@@ -17,6 +17,8 @@ namespace WpfSample
 {
     public partial class MainWindow : Window
     {
+        IReadOnlyReactiveProperty<int> MyClassMyProperty { get; }
+
         public MainWindow()
         {
             InitializeComponent();

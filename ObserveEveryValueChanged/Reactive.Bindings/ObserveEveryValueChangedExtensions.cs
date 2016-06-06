@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Windows.Media;
 
 namespace Reactive.Bindings
 {
@@ -10,66 +11,79 @@ namespace Reactive.Bindings
         /// <summary>
         /// Publish target property when value is changed. If source is destructed, publish OnCompleted.
         /// </summary>
-        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
+        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector, IEqualityComparer<TProperty> comparer = null)
             where TSource : class
         {
             if (source == null) return Observable.Empty<TProperty>();
+            comparer = comparer ?? EqualityComparer<TProperty>.Default;
 
             var reference = new WeakReference(source);
             source = null;
 
             return Observable.Create<TProperty>(observer =>
             {
-                var d = new BooleanDisposable();
-                var coroutine = PublishPocoValueChanged(reference, propertySelector, observer, d);
-                CoroutineWorker.AddCoroutine(coroutine);
-                return d;
-            });
-        }
+                var currentValue = default(TProperty);
+                var prevValue = default(TProperty);
 
-        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, BooleanDisposable cancellationToken)
-        {
-            var comparer = System.Collections.Generic.EqualityComparer<TProperty>.Default;
-
-            var isFirst = true;
-            var currentValue = default(TProperty);
-            var prevValue = default(TProperty);
-
-            while (!cancellationToken.IsDisposed)
-            {
-                var target = sourceReference.Target;
-                if (target != null)
+                var t = reference.Target;
+                if (t != null)
                 {
                     try
                     {
-                        currentValue = propertySelector((TSource)target);
+                        currentValue = propertySelector((TSource)t);
                     }
                     catch (Exception ex)
                     {
                         observer.OnError(ex);
-                        yield break;
                     }
                     finally
                     {
-                        target = null; // remove reference(must need!)
+                        t = null;
                     }
                 }
                 else
                 {
                     observer.OnCompleted();
-                    yield break;
+                    return Disposable.Empty;
                 }
 
+                observer.OnNext(currentValue);
+                prevValue = currentValue;
 
-                if (isFirst || !comparer.Equals(currentValue, prevValue))
-                {
-                    isFirst = false;
-                    observer.OnNext(currentValue);
-                    prevValue = currentValue;
-                }
+                return Observable.FromEvent<EventHandler, EventArgs>(
+                        h => (sender, e) => h.Invoke(e),
+                        h => CompositionTarget.Rendering += h,
+                        h => CompositionTarget.Rendering -= h)
+                    .Subscribe(_ =>
+                    {
+                        var target = reference.Target;
+                        if (target != null)
+                        {
+                            try
+                            {
+                                currentValue = propertySelector((TSource)target);
+                            }
+                            catch (Exception ex)
+                            {
+                                observer.OnError(ex);
+                            }
+                            finally
+                            {
+                                target = null;
+                            }
+                        }
+                        else
+                        {
+                            observer.OnCompleted();
+                        }
 
-                yield return null;
-            }
+                        if (!comparer.Equals(currentValue, prevValue))
+                        {
+                            observer.OnNext(currentValue);
+                            prevValue = currentValue;
+                        }
+                    });
+            });
         }
     }
 }
