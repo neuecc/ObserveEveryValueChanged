@@ -6,9 +6,9 @@ You can observe all properties that is not implements `INotifyPropertyChanged`.
 
 Sample
 ---
+```csharp
 using Reactive.Bindings;
 
-```csharp
 public partial class MainWindow : Window
 {
     public MainWindow()
