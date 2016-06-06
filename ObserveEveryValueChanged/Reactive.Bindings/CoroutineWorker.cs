@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Reactive.Bindings
@@ -11,10 +12,12 @@ namespace Reactive.Bindings
 
         static CoroutineWorker()
         {
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(33.33);
-            timer.Tick += (sender, e) => coroutine.Run();
-            timer.Start();
+            CompositionTarget.Rendering += RunMicroCoroutine;
+        }
+
+        private static void RunMicroCoroutine(object sender, EventArgs e)
+        {
+            coroutine.Run();
         }
 
         public static void AddCoroutine(IEnumerator coroutineEnumerator)
