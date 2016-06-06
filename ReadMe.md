@@ -1,6 +1,6 @@
 ObserveEveryValueChanged
 ---
-Voodoo Magic.
+Voodoo Magic for WPF.
 
 You can observe all properties that is not implements `INotifyPropertyChanged`.
 
