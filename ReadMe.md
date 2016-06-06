@@ -21,7 +21,7 @@ public partial class MainWindow : Window
 }
 ```
 
-![wpfgif](https://cloud.githubusercontent.com/assets/46207/15827037/ed8a72c6-2c44-11e6-81d6-b90dabf0afa9.gif)
+![wpfgif](https://cloud.githubusercontent.com/assets/46207/15827886/1573ff16-2c48-11e6-9876-4e4455d7eced.gif)
 
 `ObserveEveryValueChanged(propertySelector)`. That's all.
 
