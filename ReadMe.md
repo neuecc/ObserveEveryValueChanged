@@ -25,7 +25,7 @@ public partial class MainWindow : Window
 
 `ObserveEveryValueChanged(propertySelector)`. That's all.
 
-with [ReactiveProperty](https://github.com/runceel/ReactiveProperty/), you can create notify property changed value.
+with [ReactiveProperty](https://github.com/runceel/ReactiveProperty/), you can create bindable notify property changed value.
 
 > ReactiveProperty v2.7.3 includes this extensions 
 
@@ -39,7 +39,7 @@ public class MyClass
 public partial class MainWindow : Window
 {
     MyClass model;
-    IReadOnlyReactiveProperty<int> MyClassMyProperty { get; }
+    public IReadOnlyReactiveProperty<int> MyClassMyProperty { get; }
 
     public MainWindow()
     {
