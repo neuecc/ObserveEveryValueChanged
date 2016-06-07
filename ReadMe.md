@@ -7,7 +7,7 @@ You can observe all properties that is not implements `INotifyPropertyChanged`.
 Sample
 ---
 ```csharp
-using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 public partial class MainWindow : Window
 {
@@ -26,6 +26,8 @@ public partial class MainWindow : Window
 `ObserveEveryValueChanged(propertySelector)`. That's all.
 
 with [ReactiveProperty](https://github.com/runceel/ReactiveProperty/), you can create notify property changed value.
+
+> ReactiveProperty v2.7.3 includes this extensions 
 
 ```csharp
 public class MyClass

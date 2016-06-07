@@ -1,5 +1,6 @@
 ﻿using System;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,8 +18,6 @@ namespace WpfSample
 {
     public partial class MainWindow : Window
     {
-        IReadOnlyReactiveProperty<int> MyClassMyProperty { get; }
-
         public MainWindow()
         {
             InitializeComponent();
