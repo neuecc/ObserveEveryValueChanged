@@ -46,7 +46,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         model = new MyClass();
-        this.MyClassMyProperty = mc.ObserveEveryValueChanged(x => x.MyProperty).ToReadOnlyReactiveProperty();
+        this.MyClassMyProperty = model.ObserveEveryValueChanged(x => x.MyProperty).ToReadOnlyReactiveProperty();
     }
 }
 ```
